@@ -426,22 +426,33 @@ class ModUpdater:
         """Lists the mods installed on this server."""
         # Find the longest mod name
 
-        print(
-            "{:<{width}}\tenabled\tinstalled\tcurrent_v\tlatest_v".format(
-                "mod_name", width=self.max_mod_len
-            )
-        )
+        # print(
+        #    "{:<{width}}\tenabled\tinstalled\tcurrent_v\tlatest_v".format(
+        #        "mod_name", width=self.max_mod_len
+        #    )
+        # )
+
+        updates = False
         for mod, data in self.mods.items():
-            print(
-                "{:<{width}}\t{enbld}\t{inst}\t\t{cver}\t\t{lver}".format(
-                    mod,
-                    enbld=str(data["enabled"]),
-                    inst=str(data["installed"]),
-                    cver=data["version"] if data["installed"] else "N/A",
-                    lver=data["latest"]["version"] if "latest" in data else "N/A",
-                    width=self.max_mod_len,
+            cver = data["version"] if data["installed"] else "N/A"
+            lver = data["latest"]["version"] if "latest" in data else "N/A"
+
+            if cver != lver and lver != "N/A" and cver != "N/A":
+                updates = True
+                print(
+                    # "{:<{width}}\t{enbld}\t{inst}\t\t{cver}\t\t{lver}".format(
+                    #    mod,
+                    #    enbld=str(data["enabled"]),
+                    #    inst=str(data["installed"]),
+                    #    cver=data["version"] if data["installed"] else "N/A",
+                    #    lver=data["latest"]["version"] if "latest" in data else "N/A",
+                    #    width=self.max_mod_len,
+                    # )
+                    f"{mod} has updates available! {cver} -> {lver}"
                 )
-            )
+
+        if not updates:
+            print("No updates found")
 
     def override_credentials(self, username: str, token: str):
         """Replaces the values provided in server-settings.json or player-data.json"""
